@@ -1,0 +1,13 @@
+*
+!Dockerfile
+!web.py
+!frontend/
+!frontend/**
+!backend/
+!backend/README.md
+!backend/poetry.lock
+!backend/pyproject.toml
+!backend/alquilometro_api/
+!backend/alquilometro_api/**
+**/__pycache__/
+**/*.pyc
