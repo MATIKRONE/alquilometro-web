@@ -114,10 +114,29 @@ function openAccount(register = false) {
       ${register ? input('Nombre', 'nombre', 'required maxlength="100" autocomplete="name"') : ''}
       ${register ? select('Tipo de cuenta', 'rol', [['BUSCADOR','Busco alquilar'], ['INMOBILIARIA','Soy una inmobiliaria']]) : ''}
       ${input('Correo', 'email', 'type="email" required autocomplete="email"')}
-      ${input('Contraseña', 'password', `type="password" required ${register ? 'minlength="8"' : ''} autocomplete="${register ? 'new-password' : 'current-password'}"`)}
+      <div class="password-field">
+        <label for="account-password">Contraseña</label>
+        <div class="password-control">
+          <input id="account-password" name="password" type="password" required
+            ${register ? 'minlength="8"' : ''} autocomplete="${register ? 'new-password' : 'current-password'}">
+          <button class="password-toggle" type="button" aria-controls="account-password" aria-label="Mostrar contraseña" title="Mostrar contraseña">
+            <span class="password-eye" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
       ${submitButton(register ? 'Crear cuenta e ingresar' : 'Ingresar')}</form>
       <button class="quiet" id="toggle-account">${register ? 'Ya tengo cuenta' : 'Crear cuenta'}</button>`);
-    submit(dialogBody.querySelector('form'), async (data) => {
+    const form = dialogBody.querySelector('#login-form');
+    const password = form.elements.password;
+    const toggle = form.querySelector('.password-toggle');
+    toggle.onclick = () => {
+      const show = password.type === 'password';
+      password.type = show ? 'text' : 'password';
+      const label = show ? 'Ocultar contraseña' : 'Mostrar contraseña';
+      toggle.setAttribute('aria-label', label);
+      toggle.title = label;
+    };
+    submit(form, async (data) => {
       const credentials = { email: data.get('email'), password: data.get('password') };
       if (register) await api('/auth/registro', 'POST', {
         ...credentials, nombre: data.get('nombre'), rol: data.get('rol'),
